@@ -1,0 +1,12 @@
+{
+    "good_farm": {
+        "farm_name": "good_farm",
+        "email": "good_farm@gmail.com",
+        "password": "good_farm"
+    },
+    "bad_farm": {
+        "farm_name": "bad_farm",
+        "email": "bad_farm@gmail.com",
+        "password": "bad_farm"
+    }
+}
