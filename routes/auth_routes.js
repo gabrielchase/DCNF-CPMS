@@ -27,6 +27,7 @@ module.exports = function(app) {
                 const { iat, exp } = jwt.verify(signed_jwt, JWT_SECRET)
                 const auth_json = {
                     _id: user._id,
+                    farm_name: user.farm_name,
                     email: user.email,
                     token: signed_jwt,
                     iat, 
