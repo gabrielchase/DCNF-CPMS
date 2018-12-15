@@ -21,7 +21,7 @@ app.use(bodyParser.json({ limit: '192mb' }))
 app.use(bodyParser.urlencoded({ extended: true })) // to support URL-encoded bodies
 app.use(cors())
 
-// require('./routes/auth_routes')(app)
+require('./routes/auth_routes')(app)
 
 app.listen(PORT, () => {
     console.log(`Server running on ${PORT}`)
