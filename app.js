@@ -26,3 +26,5 @@ require('./routes/auth_routes')(app)
 app.listen(PORT, () => {
     console.log(`Server running on ${PORT}`)
 })
+
+module.exports = { app }
