@@ -24,6 +24,7 @@ app.use(cors())
 seedPackages()
 
 require('./routes/auth_routes')(app)
+require('./routes/order_routes')(app)
 
 app.listen(PORT, () => {
     console.log(`Server running on ${PORT}`)
