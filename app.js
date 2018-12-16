@@ -1,4 +1,3 @@
-
 const express = require('express')
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
@@ -6,6 +5,7 @@ const cors = require('cors')
 
 const config = require('./config/config')
 const PORT = process.env.PORT || config.PORT
+const { seedPackages } = require('./lib/db_seeds')
 
 console.log('DB_URL: ', config.DB_URL)
 
@@ -21,6 +21,7 @@ app.use(bodyParser.json({ limit: '192mb' }))
 app.use(bodyParser.urlencoded({ extended: true })) // to support URL-encoded bodies
 app.use(cors())
 
+seedPackages()
 require('./routes/auth_routes')(app)
 
 app.listen(PORT, () => {
