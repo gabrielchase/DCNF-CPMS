@@ -23,7 +23,11 @@ module.exports = function(app) {
             const match = await bcrypt.compare(password, user.password)
 
             if (match) {
-                const signed_jwt = jwt.sign({ _id: user._id, email }, JWT_SECRET, { expiresIn: JWT_EXPIRATION })
+                const signed_jwt = jwt.sign(
+                    { _id: user._id, farm_name: user.farm_name, email: user.email }, 
+                    JWT_SECRET, 
+                    { expiresIn: JWT_EXPIRATION }
+                )
                 const { iat, exp } = jwt.verify(signed_jwt, JWT_SECRET)
                 const auth_json = {
                     _id: user._id,
