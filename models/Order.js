@@ -9,7 +9,8 @@ const Order = new mongoose.Schema({
     account_number: { type: String },
     
     package_id: { type: String },
-    status: { type: String, enum: ['In Progress', 'Completed'] },
+    user_id: { type: String },
+    status: { type: String, enum: ['In Progress', 'Completed'], default: 'In Progress' },
     description: { type: String },
 
     created_on: { type: String, default: new Date() },
