@@ -5,9 +5,9 @@ const User = new mongoose.Schema({
     email: { type: String, unique: true, required: true },
     password: { type: String, required: true },
 
-    created_on: { type: String, default: new Date() },
-    modified_on: { type: String },
-    deleted_on: { type: String }
+    created_on: { type: Date, default: Date.now },
+    modified_on: { type: Date },
+    deleted_on: { type: Date }
 })
 
 module.exports = mongoose.model('User', User)
