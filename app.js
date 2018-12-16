@@ -22,6 +22,7 @@ app.use(bodyParser.urlencoded({ extended: true })) // to support URL-encoded bod
 app.use(cors())
 
 seedPackages()
+
 require('./routes/auth_routes')(app)
 
 app.listen(PORT, () => {
