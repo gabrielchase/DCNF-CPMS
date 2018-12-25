@@ -9,8 +9,6 @@ const { JWT_SECRET } = require('../config/config')
 const { good_farm, good_farm_farm_name_login, good_farm_email_login, bad_login, bad_farm } = require('./fixtures/users.json')
 
 describe('Auth tests', () => {
-    let farm_id
-
     before(async() => {
         const users = await User.find({})
         console.log(users.length)
@@ -65,7 +63,7 @@ describe('Auth tests', () => {
         const { body } = await request(app)
                                 .post('/api/auth/login')
                                 .send(good_farm_email_login)
-        console.log(body)
+        
         const farm = await User.findOne({ email: good_farm.email })
 
         assert.isTrue(body.success)
