@@ -1,0 +1,10 @@
+{
+    "good_order": {
+        "partner_name": "Partner 1",
+        "email_address": "partner1@gmail.com",
+        "mobile_number": "09176302364",
+        "address": "Quezon City",
+        "date_of_birth": "01-01-1990",
+        "account_number": "23412034"
+    }
+}
