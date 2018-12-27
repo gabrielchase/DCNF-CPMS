@@ -96,4 +96,19 @@ module.exports = function(app) {
             fail(res, err)
         }
     })
+
+    app.put('/api/payments/:payment_id/paid', checkJWT, async (req, res) => {
+        const { payment_id } = req.params
+        const { paid } = req.body
+        
+        try {
+            const payment = await Payment.findById(payment_id)
+            payment.paid = paid 
+            await payment.save()
+
+            success(res, payment)
+        } catch (err) {
+            fail(res, err)
+        }
+    })
 }
