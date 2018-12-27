@@ -24,7 +24,8 @@ module.exports = function(app) {
     // Change middleware
     app.get('/api/orders', checkJWT, async (req, res) => {
         try {
-            const orders = await Order.find({})
+            const orders = await Order.find({ user_id: req.user._id })
+            
             success(res, orders)
         } catch (err) {
             fail(res, err)
@@ -97,6 +98,8 @@ module.exports = function(app) {
         }
     })
 
+    // Write test
+    // Change middleware
     app.put('/api/payments/:payment_id/paid', checkJWT, async (req, res) => {
         const { payment_id } = req.params
         const { paid } = req.body
