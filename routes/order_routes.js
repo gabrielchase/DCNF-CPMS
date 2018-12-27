@@ -1,4 +1,5 @@
 const Order = require('../models/Order')
+const Package = require('../models/Package')
 const Payment = require('../models/Payment')
 
 const { checkJWT, checkOrderUser, checkPaymentUser } = require('../lib/middlewares')
@@ -9,6 +10,11 @@ module.exports = function(app) {
         const { package_id } = req.params
         try {
             // TODO: Check if package exists
+            const _package = await Package.findById(package_id)
+            
+            if (!_package) 
+                throw new Error(`Package ${package_id} does not exist`)
+
             req.body.package_id = package_id
             req.body.user_id = req.user._id
 
@@ -22,7 +28,6 @@ module.exports = function(app) {
     })
 
     // Write test
-    // Change middleware
     app.get('/api/orders', checkJWT, async (req, res) => {
         try {
             const orders = await Order.find({ user_id: req.user._id })
@@ -101,7 +106,6 @@ module.exports = function(app) {
     })
 
     // Write test
-    // Change middleware
     app.put('/api/payments/:payment_id/paid', checkJWT, checkPaymentUser, async (req, res) => {
         const { payment_id } = req.params
         const { paid } = req.body
