@@ -37,7 +37,8 @@ Order.post('save', async function(doc) {
                 package_id: doc.package_id,
                 due_date, 
                 amount: p.amount,
-                order_id: doc._id
+                order_id: doc._id,
+                user_id: doc.user_id
             })
 
             await payment.save()
