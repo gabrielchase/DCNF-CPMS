@@ -1,13 +1,14 @@
 const Order = require('../models/Order')
 const Payment = require('../models/Payment')
 
-const { checkJWT } = require('../lib/middlewares')
+const { checkJWT, checkOrderUser, checkPaymentUser } = require('../lib/middlewares')
 const { success, fail } = require('../lib/json_wrappers')
 
 module.exports = function(app) {
     app.post('/api/package/:package_id/orders', checkJWT, async (req, res) => {
         const { package_id } = req.params
         try {
+            // TODO: Check if package exists
             req.body.package_id = package_id
             req.body.user_id = req.user._id
 
@@ -25,7 +26,7 @@ module.exports = function(app) {
     app.get('/api/orders', checkJWT, async (req, res) => {
         try {
             const orders = await Order.find({ user_id: req.user._id })
-            
+
             success(res, orders)
         } catch (err) {
             fail(res, err)
@@ -33,8 +34,7 @@ module.exports = function(app) {
     })
 
     // Write test
-    // Change middleware
-    app.get('/api/orders/:order_id', checkJWT, async (req, res) => {
+    app.get('/api/orders/:order_id', checkJWT, checkOrderUser, async (req, res) => {
         const { order_id } = req.params
         try {
             const order = await Order.findById(order_id)
@@ -46,7 +46,6 @@ module.exports = function(app) {
     })
 
     // Write test
-    // Change middleware
     app.get('/api/payments', checkJWT, async (req, res) => {
         let { year, month, date } = req.query 
         
@@ -61,14 +60,15 @@ module.exports = function(app) {
             if (date < 1 || date > 30) 
                 throw new Error('Date must be between 1 and 30')
 
-            let payments = []
+            let payments = await Payment.find({ user_id: req.user._id })
             
             if (year && !month && !date) {
                 payments =  await Payment.find({ 
                                 due_date: { 
                                     $gte: new Date(year, 0, 0), 
                                     $lte: new Date(year, 11, 31) 
-                                }
+                                },
+                                user_id: req.user._id
                             })
             } 
 
@@ -78,7 +78,8 @@ module.exports = function(app) {
                     due_date: { 
                         $gte: new Date(year, month, 1), 
                         $lte: new Date(year, month, 31) 
-                    }
+                    },
+                    user_id: req.user._id
                 })
             }
 
@@ -88,7 +89,8 @@ module.exports = function(app) {
                     due_date: { 
                         $gte: new Date(year, month, date), 
                         $lt: new Date(year, month, date + 1) 
-                    }
+                    },
+                    user_id: req.user._id
                 })
             }
 
@@ -100,7 +102,7 @@ module.exports = function(app) {
 
     // Write test
     // Change middleware
-    app.put('/api/payments/:payment_id/paid', checkJWT, async (req, res) => {
+    app.put('/api/payments/:payment_id/paid', checkJWT, checkPaymentUser, async (req, res) => {
         const { payment_id } = req.params
         const { paid } = req.body
         
