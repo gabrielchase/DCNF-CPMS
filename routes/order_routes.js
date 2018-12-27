@@ -106,6 +106,23 @@ module.exports = function(app) {
             payment.paid = paid 
             await payment.save()
 
+            const payments_in_order = await Payment.find({ order_id: payment.order_id })
+            let all_payments_paid = true 
+
+            for (let p of payments_in_order) {
+                console.log(`checking payment ${p._id}: ${p.paid}`)
+                if (!p.paid) 
+                    all_payments_paid = false
+            }
+
+            console.log('all payments paid? ', all_payments_paid)
+
+            if (all_payments_paid) {
+                const order = await Order.findById(payment.order_id)
+                order.status = 'Completed'
+                await order.save()
+            }
+
             success(res, payment)
         } catch (err) {
             fail(res, err)
