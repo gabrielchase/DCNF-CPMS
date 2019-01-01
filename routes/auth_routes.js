@@ -17,6 +17,9 @@ module.exports = function(app) {
             if (email && !farm_name) 
                 user = await User.findOne({ email })            
 
+            if (!user) 
+                throw new Error('User does not exist')
+                
             if (user.deleted_on) 
                 throw new Error('User deleted')
 
