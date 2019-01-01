@@ -62,7 +62,7 @@ module.exports = function(app) {
             if (month < 1 || month > 12) 
                 throw new Error('Month must be between 1 and 12')
 
-            if (date < 1 || date > 30) 
+            if (date < 1 || date > 31) 
                 throw new Error('Date must be between 1 and 30')
 
             let payments = await Payment.find({ user_id: req.user._id })
