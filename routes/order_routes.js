@@ -1,3 +1,5 @@
+const moment = require('moment')
+
 const Order = require('../models/Order')
 const Package = require('../models/Package')
 const Payment = require('../models/Payment')
@@ -53,24 +55,28 @@ module.exports = function(app) {
     // Write test
     app.get('/api/payments', checkJWT, async (req, res) => {
         let { year, month, date } = req.query 
+        console.log('1', year, month, date)
         
         year = parseInt(year)
         month = parseInt(month)
         date = parseInt(date)
+
+        console.log('2', year, month, date) 
+        console.log('2', typeof(year), typeof(month), typeof(date))
 
         try {
             if (month < 1 || month > 12) 
                 throw new Error('Month must be between 1 and 12')
 
             if (date < 1 || date > 31) 
-                throw new Error('Date must be between 1 and 30')
+                throw new Error('Date must be between 1 and 31')
 
             let payments = await Payment.find({ user_id: req.user._id })
             
             if (year && !month && !date) {
                 payments =  await Payment.find({ 
                                 due_date: { 
-                                    $gte: new Date(year, 0, 0), 
+                                    $gte: new Date(year, 0, 1), 
                                     $lte: new Date(year, 11, 31) 
                                 },
                                 user_id: req.user._id
@@ -81,8 +87,8 @@ module.exports = function(app) {
                 month = month - 1
                 payments =  await Payment.find({ 
                     due_date: { 
-                        $gte: new Date(year, month, 1), 
-                        $lte: new Date(year, month, 31) 
+                        $gte: new Date(year, month, 1, 0, 0, 0), 
+                        $lte: new Date(year, month, 31, 0, 0, 0) 
                     },
                     user_id: req.user._id
                 })
@@ -90,16 +96,27 @@ module.exports = function(app) {
 
             if (year && month && date) {
                 month = month - 1
+                let earlier = new Date(year, month, date + 1)
+                let later = new Date(year, month, date + 2)  
+                
+                earlier = moment(earlier).subtract(16, 'hours')
+                later = moment(later).subtract(16, 'hours')
+                
                 payments =  await Payment.find({ 
                     due_date: { 
-                        $gte: new Date(year, month, date), 
-                        $lt: new Date(year, month, date + 1) 
+                        $gte: earlier, 
+                        $lt: later
                     },
                     user_id: req.user._id
                 })
             }
 
-            success(res, payments)
+            let payments_total = 0
+            for (let p of payments) {
+                payments_total += p.amount
+            }
+
+            success(res, { payments, total: payments_total })
         } catch (err) {
             fail(res, err)
         }
