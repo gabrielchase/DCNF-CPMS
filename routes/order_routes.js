@@ -22,6 +22,23 @@ module.exports = function(app) {
 
             const order = new Order(req.body)
             await order.save()
+            
+            for (let p of _package.payouts) {
+                const order_created_date = order.created_on
+                let current_date = new Date()
+                let due_date = current_date.setMonth(order_created_date.getMonth() + p.month)
+                
+                const payment = await new Payment({
+                    partner_name: order.partner_name,
+                    package_id: order.package_id,
+                    due_date, 
+                    amount: p.amount,
+                    order_id: order._id,
+                    user_id: order.user_id
+                })
+
+                await payment.save()
+            }
 
             success(res, order)
         } catch (err) {
@@ -90,7 +107,10 @@ module.exports = function(app) {
                 let later = new Date(year, month+1)  
                 
                 earlier = moment(earlier).subtract(16, 'hours')
+                earlier = moment(earlier).add(24, 'hours')
+                
                 later = moment(later).subtract(16, 'hours')
+                later = moment(later).add(24, 'hours')
                 
                 payments =  await Payment.find({ 
                     due_date: { 
