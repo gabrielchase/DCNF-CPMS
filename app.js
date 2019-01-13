@@ -11,6 +11,7 @@ console.log('DB_URL: ', config.DB_URL)
 
 mongoose.connect(config.DB_URL, { useNewUrlParser: true })
 mongoose.Promise = global.Promise
+mongoose.set('debug', true)
 
 const db = mongoose.connection
 db.on('error', console.error.bind(console, 'MongoDB connection error'))
