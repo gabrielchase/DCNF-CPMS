@@ -72,14 +72,14 @@ module.exports = function(app) {
     // Write test
     app.get('/api/payments', checkJWT, async (req, res) => {
         let { year, month, date } = req.query 
-        console.log('1', year, month, date)
+        // console.log('1', year, month, date)
         
         year = parseInt(year)
         month = parseInt(month)
         date = parseInt(date)
 
-        console.log('2', year, month, date) 
-        console.log('2', typeof(year), typeof(month), typeof(date))
+        // console.log('2', year, month, date) 
+        // console.log('2', typeof(year), typeof(month), typeof(date))
 
         try {
             if (month < 1 || month > 12) 
@@ -142,6 +142,8 @@ module.exports = function(app) {
             for (let p of payments) {
                 payments_total += p.amount
             }
+
+            payments = await payments.sort('due_date')
 
             success(res, { payments, total: payments_total })
         } catch (err) {
