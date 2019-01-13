@@ -172,12 +172,16 @@ module.exports = function(app) {
 
             console.log('all payments paid? ', all_payments_paid)
 
+            const order = await Order.findById(payment.order_id)
+            
             if (all_payments_paid) {
-                const order = await Order.findById(payment.order_id)
                 order.status = 'Completed'
-                await order.save()
+            } else {
+                order.status = 'In Progress'
             }
-
+            
+            await order.save()
+            
             success(res, payment)
         } catch (err) {
             fail(res, err)
