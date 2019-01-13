@@ -85,10 +85,17 @@ module.exports = function(app) {
 
             if (year && month && !date) {
                 month = month - 1
+                
+                let earlier = new Date(year, month)
+                let later = new Date(year, month+1)  
+                
+                earlier = moment(earlier).subtract(16, 'hours')
+                later = moment(later).subtract(16, 'hours')
+                
                 payments =  await Payment.find({ 
                     due_date: { 
-                        $gte: new Date(year, month, 1, 0, 0, 0), 
-                        $lte: new Date(year, month, 31, 0, 0, 0) 
+                        $gte: earlier, 
+                        $lte: later 
                     },
                     user_id: req.user._id
                 })
