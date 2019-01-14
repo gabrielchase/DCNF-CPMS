@@ -97,7 +97,7 @@ module.exports = function(app) {
                                     $lte: new Date(year, 11, 31) 
                                 },
                                 user_id: req.user._id
-                            })
+                            }).sort('due_date')
             } 
 
             if (year && month && !date) {
@@ -118,7 +118,7 @@ module.exports = function(app) {
                         $lte: later 
                     },
                     user_id: req.user._id
-                })
+                }).sort('due_date')
             }
 
             if (year && month && date) {
@@ -135,15 +135,13 @@ module.exports = function(app) {
                         $lt: later
                     },
                     user_id: req.user._id
-                })
+                }).sort('due_date')
             }
 
             let payments_total = 0
             for (let p of payments) {
                 payments_total += p.amount
             }
-
-            payments = await payments.sort('due_date')
 
             success(res, { payments, total: payments_total })
         } catch (err) {
@@ -159,6 +157,7 @@ module.exports = function(app) {
         try {
             const payment = await Payment.findById(payment_id)
             payment.paid = paid 
+            t.,payment.modified_on = new Date()
             await payment.save()
 
             const payments_in_order = await Payment.find({ order_id: payment.order_id })
