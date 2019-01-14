@@ -6,6 +6,7 @@ const Payment = new mongoose.Schema({
     due_date: { type: Date },
     amount: { type: Number },
     paid: { type: Boolean, default: false },
+    paid_by: { type: String },
     order_id: { type: String },
     user_id: { type: String },
 
