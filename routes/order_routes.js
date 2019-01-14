@@ -46,6 +46,34 @@ module.exports = function(app) {
         }
     })
 
+    app.get('/api/upcoming_payments', checkJWT, async (req, res) => {
+        try {
+            const current_date = new Date()
+            const year = current_date.getFullYear()
+            const month = current_date.getMonth()
+
+            let earlier = new Date(year, month)
+            let later = new Date(year+1, month)
+
+            console.log(year, month)
+            earlier = moment(earlier).subtract(16, 'hours').add(24, 'hours')
+            later = moment(later).subtract(16, 'hours').add(24, 'hours')
+
+            const payments =  await Payment.find({ 
+                            due_date: { 
+                                $gte: earlier, 
+                                $lte: later 
+                            },
+                            user_id: req.user._id
+                        }).sort('due_date')
+
+            success(res, payments)
+        } catch (err) {
+            console.log(err)
+            fail(res, err)
+        }
+    })
+
     // Write test
     app.get('/api/orders', checkJWT, async (req, res) => {
         try {
@@ -157,7 +185,7 @@ module.exports = function(app) {
         try {
             const payment = await Payment.findById(payment_id)
             payment.paid = paid 
-            t.,payment.modified_on = new Date()
+            payment.modified_on = new Date()
             await payment.save()
 
             const payments_in_order = await Payment.find({ order_id: payment.order_id })
