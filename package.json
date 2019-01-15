@@ -25,6 +25,9 @@
     "start": "node app.js",
     "test": "export NODE_ENV=test || SET \"NODE_ENV=test\" && mocha tests/**/*.test.js --reporter spec --timeout 60000 --exit"
   },
+  "engines": {
+    "node": "8.12"
+  },
   "author": "",
   "license": "ISC"
 }
