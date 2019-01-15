@@ -64,7 +64,8 @@ module.exports = function(app) {
                                 $gte: earlier, 
                                 $lte: later 
                             },
-                            user_id: req.user._id
+                            user_id: req.user._id,
+                            paid: false
                         }).sort('due_date')
 
             success(res, payments)
