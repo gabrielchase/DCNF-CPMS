@@ -19,15 +19,25 @@ module.exports = function(app) {
 
             req.body.package_id = package_id
             req.body.user_id = req.user._id
+            
+            let year = req.body.start_date.split('-')[2]
+            let date = req.body.start_date.split('-')[1]
+            let month = req.body.start_date.split('-')[0]
+            
+            year = parseInt(year)
+            month = parseInt(month) - 1
+            date = parseInt(date)
+            
+            start_date = new Date(year, month, date)
+            req.body.start_date = moment(start_date).subtract(16, 'hours').add(24, 'hours')
 
             const order = new Order(req.body)
             await order.save()
             
             for (let p of _package.payouts) {
-                const order_created_date = order.created_on
-                let current_date = new Date()
-                let due_date = current_date.setMonth(order_created_date.getMonth() + p.month)
-                
+                const order_start_date = order.start_date
+                let due_date = order_start_date.setMonth(order_start_date.getMonth() + p.month)
+
                 const payment = await new Payment({
                     partner_name: order.partner_name,
                     package_id: order.package_id,
@@ -36,6 +46,8 @@ module.exports = function(app) {
                     order_id: order._id,
                     user_id: order.user_id
                 })
+
+                console.log(payment.due_date)
 
                 await payment.save()
             }
