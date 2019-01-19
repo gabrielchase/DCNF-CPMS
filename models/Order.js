@@ -7,6 +7,7 @@ const Order = new mongoose.Schema({
     address: { type: String },
     date_of_birth: { type: String },
     account_number: { type: String },
+    start_date: { type: Date },
     
     package_id: { type: String },
     user_id: { type: String },
